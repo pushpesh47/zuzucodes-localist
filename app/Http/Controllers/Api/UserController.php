@@ -25,39 +25,49 @@ class UserController extends Controller
     {
         $aVals = $request->all();
         $auto_bid = $request->auto_bid;
-        $loggedUser = $request->loggedUser;
-        $validator = self::validators($aVals,$loggedUser);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors());
+        $loggedUser = $request->loggedUser;//For checking seller/buyer
+        if($aVals['form_status'] == 1){
+            $validator = self::validators($aVals,$loggedUser);
+            if ($validator->fails()) {
+                return $this->sendError($validator->errors());
+            }
         }
         $aVals['password'] = Hash::make($request->password);
+        $result = $this->zeroBounceService->validateEmail($request->email);
+        if ($result['status'] === 'invalid') {
+            return $this->sendError('Email is Invalid');
+        }
         $user = User::create($aVals);
-
+        $token = $user->createToken('authToken', ['user_id' => $user->id])->plainTextToken;
+        $user->update(['remember_token' => $token]);
+        $user->remember_tokens = $token;
         // $aVals['password'] = Hash::make($request->password);
 
         // $user = User::create($aVals);
 
         if($user && $loggedUser == 1)
         {
-            $serviceIds = is_array($aVals['service_id']) ? $aVals['service_id'] : explode(',', $aVals['service_id']);
+              // Check if service_id is an array or convert it to one
+        $serviceIds = is_array($aVals['service_id']) ? $aVals['service_id'] : explode(',', $aVals['service_id']);
 
-            foreach ($serviceIds as $serviceId) {
-                // Create a separate row for each service_id
-                $service = UserService::createUserService($user->id, $serviceId, $auto_bid);
+        foreach ($serviceIds as $serviceId) {
+            // Create a separate row for each service_id
+            $service = UserService::createUserService($user->id, $serviceId, $auto_bid);
 
-                if ($service) {
-                    $aLocations['service_id'] = $service->id;
-                    $aLocations['user_id'] = $user->id;
-                    if(!empty($aVals['miles1']) && !empty($aVals['miles2'])){
-                        $aLocations['miles'] = $aVals['miles1'] + $aVals['miles2'];
-                    }else{
-                        $aLocations['miles'] = $aVals['miles1'];
-                    }
-                    
-                    $aLocations['postcode'] = $aVals['postcode'];
-                    UserServiceLocation::createUserServiceLocation($aLocations);
+            if ($service) {
+                $aLocations['service_id'] = $service->id;
+                $aLocations['user_id'] = $user->id;
+                if (isset($aVals['miles1']) && isset($aVals['miles2']) && !empty($aVals['miles1']) && !empty($aVals['miles2'])) {
+                    $aLocations['miles'] = $aVals['miles1'] + $aVals['miles2'];
+                } elseif (!empty($aVals['miles1'])) {
+                    $aLocations['miles'] = $aVals['miles1'];
+                } else {
+                    $aLocations['miles'] = 0; // Default value to avoid undefined variable issues
                 }
+                $aLocations['postcode'] = $aVals['postcode'];
+                UserServiceLocation::createUserServiceLocation($aLocations);
             }
+        }
             // $service = UserService::createUserService($user->id,$aVals['service_id']);
             // if($service)
             // {
@@ -68,36 +78,34 @@ class UserController extends Controller
             //     UserServiceLocation::createUserServiceLocation($aLocations);
             // }
         }
-
-        return $this->sendResponse(__('registration successfully'));
+        return $this->sendResponse('Registration Successful.', $user);
+        // return $this->sendResponse(__('registration successfully',$user));
 
     }
 
     public function validators($aVals,$loggedUser){
         if($loggedUser == 1){
             $validator = Validator::make($aVals, [
-                'miles' => 'required',
+                'miles1' => 'required',
+                'miles2' => 'required',
                 'postcode' => 'required',
                 'service_id' => 'required',
                 'name' => 'required',
                 'email' => 'required|email|unique:users,email',
-                'password' => 'required|string|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*?&]/|max:16',
-                // 'phone' => 'required'
+                'password' => 'required|string|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*?&]/|max:16'
               ], [
                 'password.min' => 'The new password must be at least 8 characters.',
-                'password.regex' => 'The new password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
-                // 'mobile.required' => 'The mobile number is required.',
+                'password.regex' => 'The new password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
             ]);
+            
         }else{
             $validator = Validator::make($aVals, [
                 'name' => 'required',
                 'email' => 'required|email|unique:users,email',
-                'password' => 'required|string|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*?&]/|max:16',
-                // 'phone' => 'required'
+                'password' => 'required|string|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*?&]/|max:16'
               ], [
                 'password.min' => 'The new password must be at least 8 characters.',
-                'password.regex' => 'The new password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
-                // 'mobile.required' => 'The mobile number is required.',
+                'password.regex' => 'The new password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
             ]);
         }
         return $validator;

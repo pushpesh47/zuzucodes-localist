@@ -21,6 +21,10 @@ class ApiController extends Controller
     public function popularServices()
     {
         $aRows = Category::where('is_home',1)->orderBy('id','DESC')->where('status',1)->get();
+        foreach($aRows as $value){
+            $value['baseurl'] = url('/').Storage::url('app/public/images/category');
+        }
+        
         return $this->sendResponse(__('Category Data'),$aRows);
     }
 
