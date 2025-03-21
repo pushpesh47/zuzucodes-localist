@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="header">{{ __('View Seller Details') }} </x-slot>
+    <x-slot name="header">{{ __('View Lead Buyers') }} </x-slot>
 <div class="row">
 <div class="col-md-6 col-xl-6 col-sm-12">
 <div class="card mb-4">

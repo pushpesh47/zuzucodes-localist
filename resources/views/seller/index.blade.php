@@ -1,9 +1,9 @@
 <x-app-layout>
-    <x-slot name="header">{{ __('Seller') }} </x-slot>
+    <x-slot name="header">{{ __('Lead Buyers') }} </x-slot>
 
     <div class="card mb-4">
       <div class="card-header">
-          <strong>{{ __('Seller') }}</strong>
+          <strong>{{ __('Lead Buyers') }}</strong>
       </div>
       <div class="card-body">
         @if(count($aRows) > 0)

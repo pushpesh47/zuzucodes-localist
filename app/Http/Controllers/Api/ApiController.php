@@ -20,26 +20,38 @@ class ApiController extends Controller
 
     public function popularServices()
     {
-        $aRows = Category::where('is_home',1)->where('status',1)->get();
+        $aRows = Category::where('is_home',1)->orderBy('id','DESC')->where('status',1)->get();
         return $this->sendResponse(__('Category Data'),$aRows);
     }
 
     public function searchServices(Request $request)
     {
         $search = $request->search; // Get search keyword from request
+        $serviceid = $request->serviceid; // Get search keyword from request
     
         // Check if search keyword is provided; otherwise, return empty
         if (empty($search)) {
             $categories = [];
             return $this->sendResponse(__('Category Data'), $categories);
         }
-    
-        $categories = Category::where('status', 1)
+        if(!empty($serviceid)){
+            $categories = Category::where('status', 1)
+            ->where('id', '!=', $serviceid)
+            ->where(function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%")
+                      ->orWhere('description', 'LIKE', "%{$search}%");
+            })
+            ->get();
+        }else{
+            $categories = Category::where('status', 1)
                               ->where(function ($query) use ($search) {
                                   $query->where('name', 'LIKE', "%{$search}%")
                                         ->orWhere('description', 'LIKE', "%{$search}%");
                               })
                               ->get();
+        }
+        
+        
     
         return $this->sendResponse(__('Category Data'), $categories);
     }

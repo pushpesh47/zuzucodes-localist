@@ -20,26 +20,26 @@
         <li class="nav-item">
             <a href="{{ route('categories.index') }}" class="nav-link {{ request()->routeIs('categories.index') ? 'active' : '' }}">
                 <svg class="nav-icon"><use xlink:href="{{ asset('coreui/node_modules/@coreui/icons/sprites/free.svg#cil-puzzle') }}"></use></svg>
-                {{ __('Category') }}
+                {{ __('Sector') }}
             </a>   
         </li> 
         
         <li class="nav-item">
             <a href="{{ route('subcategories.index') }}" class="nav-link {{ request()->routeIs('subcategories.index') ? 'active' : '' }}">
                 <svg class="nav-icon"><use xlink:href="{{ asset('coreui/node_modules/@coreui/icons/sprites/free.svg#cil-puzzle') }}"></use></svg>
-                {{ __('Sub Category') }}
+                {{ __('Sub Sector') }}
             </a>   
         </li>
         <li class="nav-item">
             <a href="{{ route('seller.index') }}" class="nav-link {{ request()->routeIs('seller.index') ? 'active' : '' }}">
                 <svg class="nav-icon"><use xlink:href="{{ asset('coreui/node_modules/@coreui/icons/sprites/free.svg#cil-puzzle') }}"></use></svg>
-                {{ __('Seller') }}
+                {{ __('Lead Buyers') }}
             </a>   
         </li>
         <li class="nav-item">
             <a href="{{ route('buyer.index') }}" class="nav-link {{ request()->routeIs('buyer.index') ? 'active' : '' }}">
                 <svg class="nav-icon"><use xlink:href="{{ asset('coreui/node_modules/@coreui/icons/sprites/free.svg#cil-puzzle') }}"></use></svg>
-                {{ __('Buyer') }}
+                {{ __('Quote Customers') }}
             </a>   
         </li>
         <li class="nav-item">

@@ -1,9 +1,9 @@
 <x-app-layout>
-    <x-slot name="header">@if($aRow) {{ __('Update Category') }} @else {{ __('Add Category') }} @endif  </x-slot>
+    <x-slot name="header">@if($aRow) {{ __('Update Sector') }} @else {{ __('Add Sector') }} @endif  </x-slot>
 
     <div class="card mb-4">
       <div class="card-header">
-          <strong>@if($aRow) {{ __('Update Category') }} @else {{ __('Add Category') }} @endif </strong>
+          <strong>@if($aRow) {{ __('Update Sector') }} @else {{ __('Add Sector') }} @endif </strong>
       </div>
       <div class="card-body">
           @if($aRow)

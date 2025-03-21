@@ -1,10 +1,10 @@
 <x-app-layout>
-    <x-slot name="header">{{ __('Categories') }} </x-slot>
+    <x-slot name="header">{{ __('Sector') }} </x-slot>
 
     <div class="card mb-4">
       <div class="card-header">
-          <strong>{{ __('Categories') }}</strong>
-          <a href="{{ route('categories.create') }}" class="btn btn-secondary btn-sm float-end">{{ _('Add Category') }}</a>
+          <strong>{{ __('Sector') }}</strong>
+          <a href="{{ route('categories.create') }}" class="btn btn-secondary btn-sm float-end">{{ _('Add Sector') }}</a>
       </div>
       <div class="card-body">
         @if(count($aRows) > 0)

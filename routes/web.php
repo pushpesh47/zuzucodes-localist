@@ -30,8 +30,9 @@ Route::get('/install-api', function() {
 // Route::get('/', function () {
 //     return view('dashboard');
 // })->middleware(['auth:admin', 'verified'])->name('dashboard');
-Route::get('/', [DashboardController::class, 'index'])->middleware(['auth:admin', 'verified'])->name('dashboard');
+// Route::get('/', [DashboardController::class, 'index'])->middleware(['auth:admin', 'verified'])->name('dashboard');
 Route::middleware('auth:admin')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->middleware(['auth:admin'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
